@@ -67,7 +67,7 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
   private static final Logger logger = LogManager.getLogger(InitialLoginSessionHandler.class);
   private static final String MOJANG_HASJOINED_URL =
       System.getProperty("mojang.sessionserver",
-              "https://sessionserver.mojang.com/session/minecraft/hasJoined")
+              "Modifier par le lien de l'API de Plutonia.")
           .concat("?username=%s&serverId=%s");
 
   private final VelocityServer server;
