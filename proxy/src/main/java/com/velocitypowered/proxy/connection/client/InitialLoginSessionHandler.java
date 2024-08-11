@@ -264,7 +264,7 @@ public class InitialLoginSessionHandler implements MinecraftSessionHandler {
               logger.error(
                   "Got an unexpected error code {} whilst contacting Mojang to log in {} ({})",
                   response.statusCode(), login.getUsername(), playerIp);
-              inbound.disconnect(Component.text("Veuillez telecharger notre launcher depuis notre site web: https://plutonia-mc.fr/"));
+              inbound.disconnect(Component.text("Notre launcher est obligatoire pour jouer, veuillez telecharger notre launcher depuis notre site web: https://plutonia.fr/"));
             }
           }, mcConnection.eventLoop())
           .thenRun(() -> {
