@@ -848,56 +848,56 @@ public class ConnectedPlayer implements MinecraftConnectionAssociation, Player, 
    * @return the next server to try
    */
   private Optional<RegisteredServer> getNextServerToTry(@Nullable RegisteredServer current) {
-	    if (serversToTry == null) {
-	      String virtualHostStr = getVirtualHost().map(InetSocketAddress::getHostString)
-	          .orElse("")
-	          .toLowerCase(Locale.ROOT);
-	      serversToTry = server.getConfiguration().getForcedHosts().getOrDefault(virtualHostStr,
-	          Collections.emptyList());
-	    }
+    if (serversToTry == null) {
+      String virtualHostStr = getVirtualHost().map(InetSocketAddress::getHostString)
+          .orElse("")
+          .toLowerCase(Locale.ROOT);
+      serversToTry = server.getConfiguration().getForcedHosts().getOrDefault(virtualHostStr,
+          Collections.emptyList());
+    }
 
-	    if (serversToTry.isEmpty()) {
-	      List<String> connOrder = server.getConfiguration().getAttemptConnectionOrder();
-	      if (connOrder.isEmpty()) {
-	        return Optional.empty();
-	      } else {
-	        serversToTry = connOrder;
-	      }
-	    }
+    if (serversToTry.isEmpty()) {
+      List<String> connOrder = server.getConfiguration().getAttemptConnectionOrder();
+      if (connOrder.isEmpty()) {
+        return Optional.empty();
+      } else {
+        serversToTry = connOrder;
+      }
+    }
 
-	    HashMap<Integer, Optional<RegisteredServer>> servers = new HashMap<>();
+    HashMap<Integer, Optional<RegisteredServer>> servers = new HashMap<>();
 
-	    for (int i = tryIndex; i < serversToTry.size(); i++) {
-	      String toTryName = serversToTry.get(i);
-	      if ((this.connectedServer == null
-	          || !hasSameName((RegisteredServer) this.connectedServer.getServer(), toTryName)) && (this.connectionInFlight == null
-	          || !hasSameName((RegisteredServer) this.connectionInFlight.getServer(), toTryName)) && (current == null
-	          || !hasSameName(current, toTryName))) {
-	        servers.put(Integer.valueOf(i), this.server.getServer(toTryName)); 
-	      }
-	    }
+    for (int i = tryIndex; i < serversToTry.size(); i++) {
+      String toTryName = serversToTry.get(i);
+      if ((this.connectedServer == null
+          || !hasSameName((RegisteredServer) this.connectedServer.getServer(), toTryName)) && (this.connectionInFlight == null
+          || !hasSameName((RegisteredServer) this.connectionInFlight.getServer(), toTryName)) && (current == null
+          || !hasSameName(current, toTryName))) {
+        servers.put(Integer.valueOf(i), this.server.getServer(toTryName)); 
+      }
+    }
 
-	    if (!servers.isEmpty()) {
-	      int tempIndex = 0;
-	      Optional<RegisteredServer> tempRegisteredServer = null;
+    if (!servers.isEmpty()) {
+      int tempIndex = 0;
+      Optional<RegisteredServer> tempRegisteredServer = null;
 
-	      for (Map.Entry<Integer, Optional<RegisteredServer>> entry : servers.entrySet()) {
-	        Optional<RegisteredServer> currentServerOptional = entry.getValue();
+      for (Map.Entry<Integer, Optional<RegisteredServer>> entry : servers.entrySet()) {
+        Optional<RegisteredServer> currentServerOptional = entry.getValue();
 
-	        if (tempRegisteredServer == null
-	            || currentServerOptional.isPresent()
-	            && currentServerOptional.get().getPlayersConnected().size() < tempRegisteredServer.get().getPlayersConnected().size()) {
-	          tempIndex = entry.getKey();
-	          tempRegisteredServer = currentServerOptional;
-	        }
-	      }
+        if (tempRegisteredServer == null
+            || currentServerOptional.isPresent()
+            && currentServerOptional.get().getPlayersConnected().size() < tempRegisteredServer.get().getPlayersConnected().size()) {
+          tempIndex = entry.getKey();
+          tempRegisteredServer = currentServerOptional;
+        }
+      }
 
-	      this.tryIndex = tempIndex;
-	      return tempRegisteredServer;
-	    }
+      this.tryIndex = tempIndex;
+      return tempRegisteredServer;
+    }
 
-	    return Optional.empty();
-	  }
+    return Optional.empty();
+  }
 
   private static boolean hasSameName(RegisteredServer server, String name) {
     return server.getServerInfo().getName().equalsIgnoreCase(name);
